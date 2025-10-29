@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>subplacity | roblox subplace finder</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>subplacity</h1>
+
+        <div class="input-section">
+            <input type="text" id="placeId" placeholder="place id">
+            <button id="fetchBtn">fetch</button>
+        </div>
+
+        <div class="status" id="status">ready</div>
+
+        <table id="placesTable" class="hidden">
+            <thead>
+                <tr>
+                    <th>name</th>
+                    <th>id</th>
+                    <th>actions</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+
+        <div class="empty" id="emptyState">
+            enter a place id and click fetch
+        </div>
+    </div>
+
+    <script src="renderer.js"></script>
+</body>
+</html>
