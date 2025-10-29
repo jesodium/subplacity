@@ -1,6 +1,6 @@
 # 🏙️ Subplacity
-![GitHub Repo stars](https://img.shields.io/github/stars/[username]/subplacity?style=for-the-badge)
-![GitHub License](https://img.shields.io/github/license/[username]/subplacity?style=for-the-badge)
+![GitHub Repo stars](https://img.shields.io/github/stars/jesodium/subplacity?style=for-the-badge)
+![GitHub License](https://img.shields.io/github/license/jesodium/subplacity?style=for-the-badge)
 
 Subplacity is a tool that scans universes in Roblox to find its subplaces.
 No telemetry, no .roblosecurity, private and safe.
