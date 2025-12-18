@@ -3,42 +3,37 @@
   "version": "1.0.0",
   "description": "roblox subplace finder",
   "main": "main.js",
+  "author": "misunderstood",
+  "license": "MIT",
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder"
+    "dist": "electron-builder -mw"
   },
-  "keywords": [],
-  "author": "",
-  "license": "MIT",
+  "build": {
+    "appId": "com.misunderstood.subplacity",
+    "productName": "Subplacity", 
+    "directories": {
+      "buildResources": "build"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "build/icon.icns"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "shortcutName": "Subplacity"
+    }
+  },
   "devDependencies": {
-    "electron": "^39.2.7",
+    "electron": "^33.0.0",
     "electron-builder": "^24.9.1"
   },
   "dependencies": {
-    "axios": "^1.6.2",
-    "form-data": "^4.0.0"
-  },
-  "build": {
-    "appId": "com.misunderstood.subplaces",
-    "productName": "subplacity",
-    "win": {
-      "target": "portable",
-      "icon": "icon.ico",
-      "signAndEditExecutable": false,
-      "sign": null
-    },
-        "mac": {
-      "target": "dmg",
-      "icon": "icon.png",
-      "category": "public.app-category.utilities"
-    },
-    "files": [
-      "**/*",
-      "node_modules/**/*"
-    ],
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true
-    }
+    "axios": "^1.6.2"
   }
 }
