@@ -1,10 +1,9 @@
-name: build subplacity
+name: build windows executable and macos app.
 
 on:
   push:
     tags:
-      - "v*.*.*"   # build only when version tags are pushed
-  workflow_dispatch:
+      - "v*.*.*"
 
 jobs:
   build-mac:
@@ -12,26 +11,23 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      - name: Install dependencies
-        run: npm ci
+      - run: npm ci
 
-      - name: Build DMG
+      - name: Build macOS
         run: npx electron-builder --mac
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload macOS artifact
+      - name: Upload DMG
         uses: actions/upload-artifact@v4
         with:
-          name: Subplacity-mac
+          name: mac
           path: dist/*.dmg
 
   build-win:
@@ -39,24 +35,39 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      - name: Install dependencies
-        run: npm ci
+      - run: npm ci
 
-      - name: Build EXE
+      - name: Build Windows
         run: npx electron-builder --win
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload Windows artifact
+      - name: Upload EXE
         uses: actions/upload-artifact@v4
         with:
-          name: Subplacity-win
+          name: win
           path: dist/*.exe
+
+  release:
+    name: Create GitHub Release
+    needs: [build-mac, build-win]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/**/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
