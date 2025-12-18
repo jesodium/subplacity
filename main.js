@@ -1,6 +1,7 @@
 const { app, BrowserWindow, ipcMain, shell, clipboard } = require('electron');
 const path = require('path');
 const axios = require('axios');
+app.setName('subplacity'); // if this fixes it im gonna cry
 
 let mainWindow;
 
