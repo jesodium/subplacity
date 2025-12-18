@@ -4,7 +4,7 @@ on:
   push:
     tags:
       - "v*.*.*"  # Trigger on version tags like v1.0.2
-  workflow_dispatch:  # Allow manual trigger if needed
+  workflow_dispatch:  # Optional: manual trigger
 
 jobs:
   build-mac:
