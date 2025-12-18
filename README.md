@@ -2,8 +2,7 @@ Subplacity is a lightweight tool made with Electron that scans Roblox experience
 No telemetry, no .ROBLOSECURITY, fully private and safe.
 It allows for quick joining with a deeplink and copying placeid.
 
-<img width="975" height="277" alt="imagen" src="https://github.com/user-attachments/assets/0d40c363-c52f-45d6-9822-1d09b710cc65" />
-
+<img width="1013" height="722" alt="Screenshot 2025-12-18 at 10 48 23 AM" src="https://github.com/user-attachments/assets/e58fc0a6-2f50-4e08-8abb-a6d4c50e048f" />
 
 How it works:
 1. You put the placeid of the basegame (think Counter-Blox)
