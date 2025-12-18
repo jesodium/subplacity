@@ -4,38 +4,360 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>subplacity | roblox subplace finder</title>
-    <link rel="stylesheet" href="styles.css">
+    
+    <!-- FONTS -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
+
+    <style>
+        /* --- SOLACE DESIGN SYSTEM --- */
+        :root {
+            --bg-color: #050505;
+            --panel-bg: #0a0a0a;
+            --win-border: #333;
+            --accent: #ffffff;
+            --text-main: #eee;
+            --text-muted: #888;
+            
+            --font-main: 'JetBrains Mono', monospace; 
+            --font-ui: 'Inter', sans-serif;
+            --font-header: 'Space Mono', monospace;
+            
+            --success: #10b981;
+            --error: #ef4444;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
+
+        body {
+            font-family: var(--font-main);
+            background: var(--bg-color);
+            color: var(--text-main);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- BACKGROUND GRID --- */
+        .workspace-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: -1; pointer-events: none;
+        }
+
+        /* --- LAYOUT --- */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        /* --- HEADER --- */
+        header {
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--win-border);
+            padding-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        h1 {
+            font-family: var(--font-header);
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 1px;
+            text-transform: lowercase;
+        }
+        
+        .version-tag {
+            font-family: var(--font-ui);
+            font-size: 10px;
+            color: #666;
+            border: 1px solid #333;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        /* --- INPUT SECTION --- */
+        .input-section {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            background: #0a0a0a;
+            padding: 15px;
+            border: 1px solid #333;
+            border-radius: 6px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        input[type="text"] {
+            flex: 1;
+            background: #000;
+            border: 1px solid #333;
+            color: #fff;
+            font-family: var(--font-main);
+            font-size: 13px;
+            padding: 10px 15px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        input[type="text"]:focus {
+            border-color: #fff;
+            box-shadow: 0 0 10px rgba(255,255,255,0.1);
+        }
+
+        /* --- BUTTONS (Fixed & Animated) --- */
+        button {
+            background: #000;
+            border: 1px solid #fff;
+            color: #fff;
+            font-family: var(--font-ui);
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            padding: 0 20px;
+            text-transform: uppercase;
+            border-radius: 4px;
+            transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+            letter-spacing: 0.5px;
+        }
+
+        button:hover {
+            background: #fff;
+            color: #000;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255,255,255,0.2);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            background: #111;
+            border-color: #333;
+            color: #666;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* --- STATUS --- */
+        .status {
+            font-family: var(--font-ui);
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 20px;
+            padding-left: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .status-dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: #333; display: inline-block;
+            transition: background 0.3s;
+        }
+        
+        /* Pulse Animation */
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+            70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        .status.active .status-dot { 
+            background: var(--success); 
+            animation: pulse 2s infinite;
+        }
+        .status.error .status-dot { background: var(--error); box-shadow: 0 0 5px var(--error); }
+
+        /* --- TABLE --- */
+        .table-wrapper {
+            flex: 1;
+            overflow-y: auto;
+            border: 1px solid var(--win-border);
+            background: rgba(10, 10, 10, 0.6);
+            backdrop-filter: blur(5px);
+            border-radius: 6px;
+            position: relative;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+
+        table.hidden { display: none; }
+
+        thead th {
+            text-align: left;
+            background: #0e0e0e;
+            color: #888;
+            font-family: var(--font-ui);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 12px 15px;
+            border-bottom: 1px solid #333;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        /* --- ROW ANIMATIONS --- */
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        tbody tr {
+            animation: slideUp 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            opacity: 0; /* Hidden initially for animation */
+        }
+        
+        /* Stagger animation for first 10 items */
+        tbody tr:nth-child(1) { animation-delay: 0.05s; }
+        tbody tr:nth-child(2) { animation-delay: 0.1s; }
+        tbody tr:nth-child(3) { animation-delay: 0.15s; }
+        tbody tr:nth-child(4) { animation-delay: 0.2s; }
+        tbody tr:nth-child(5) { animation-delay: 0.25s; }
+        /* ... and so on, others will just appear */
+
+        tbody td {
+            padding: 10px 15px;
+            border-bottom: 1px solid #1a1a1a;
+            color: #ccc;
+            vertical-align: middle;
+        }
+
+        tbody tr:hover {
+            background: #161616;
+        }
+
+        /* --- ACTION BUTTONS INSIDE TABLE --- */
+        /* Targets any button inside a table cell */
+        td button {
+            background: transparent !important;
+            border: 1px solid #333 !important;
+            color: #888 !important;
+            padding: 4px 10px !important;
+            font-size: 10px !important;
+            margin-left: 5px;
+            height: auto;
+            border-radius: 4px;
+        }
+        
+        td button:hover {
+            background: #fff !important;
+            color: #000 !important;
+            border-color: #fff !important;
+            transform: translateY(-1px);
+        }
+
+        /* --- EMPTY STATE --- */
+        .empty {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #444;
+            font-family: var(--font-ui);
+            font-size: 13px;
+            animation: fadeIn 0.5s ease;
+        }
+        .empty.hidden { display: none; }
+        
+        @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+        /* --- SCROLLBAR --- */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+
+    </style>
 </head>
 <body>
+
+    <div class="workspace-bg"></div>
+
     <div class="container">
-        <h1>subplacity</h1>
+        <header>
+            <h1>subplacity <span style="color:#666">//</span> finder</h1>
+            <span class="version-tag">v1.0.0</span>
+        </header>
 
         <div class="input-section">
-            <input type="text" id="placeId" placeholder="place id">
-            <button id="fetchBtn">fetch</button>
+            <input type="text" id="placeId" placeholder="enter universe id / place id...">
+            <button id="fetchBtn">FETCH SUBPLACES</button>
         </div>
 
-        <div class="status" id="status">ready</div>
+        <div class="status" id="status">
+            <span class="status-dot"></span>
+            <span id="statusText">system ready</span>
+        </div>
 
-        <table id="placesTable" class="hidden">
-            <thead>
-                <tr>
-                    <th>name</th>
-                    <th>id</th>
-                    <th>actions</th>
-                </tr>
-            </thead>
-            <tbody id="tableBody"></tbody>
-        </table>
+        <div class="table-wrapper">
+            <div class="empty" id="emptyState">
+                waiting for input...
+            </div>
 
-        <div class="empty" id="emptyState">
-            enter a place id and click fetch
+            <table id="placesTable" class="hidden">
+                <thead>
+                    <tr>
+                        <th width="40%">Name</th>
+                        <th width="30%">ID</th>
+                        <th width="30%" style="text-align:right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+    <script>
+        const notyf = new Notyf({
+            duration: 2500,
+            position: { x: 'right', y: 'bottom' },
+            types: [
+                { type: 'success', background: '#10b981', icon: false },
+                { type: 'error', background: '#ef4444', icon: false }
+            ]
+        });
+
+        // 1. UPDATED DEEP LINK LOGIC
+        window.openPlace = (id) => {
+            // Tries to launch Roblox Client directly
+            window.location.href = `roblox://placeId=${id}`;
+            notyf.success(`Launching Roblox: ${id}`);
+        };
+
+        window.copyToClipboard = (text) => {
+            navigator.clipboard.writeText(text);
+            notyf.success(`ID Copied: ${text}`);
+        };
+    </script>
+
+    <!-- YOUR ORIGINAL LOGIC -->
     <script src="renderer.js"></script>
 </body>
 </html>

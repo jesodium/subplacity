@@ -11,7 +11,7 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "electron": "^28.0.0",
+    "electron": "^39.2.7",
     "electron-builder": "^24.9.1"
   },
   "dependencies": {
@@ -26,6 +26,11 @@
       "icon": "icon.ico",
       "signAndEditExecutable": false,
       "sign": null
+    },
+        "mac": {
+      "target": "dmg",
+      "icon": "icon.png",
+      "category": "public.app-category.utilities"
     },
     "files": [
       "**/*",
