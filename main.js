@@ -8,18 +8,19 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1000,
     height: 700,
+    title: 'subplacity',
+    // Fix: This must be at the root level, not inside webPreferences
+    autoHideMenuBar: true, 
+    // Pointing to build folder standardizes icons for packaging
+    icon: path.join(__dirname, 'build/icon.png'), 
     webPreferences: {
       nodeIntegration: false,
-      contextIsolation: true,
-      preload: path.join(__dirname, 'preload.js')
-    },
-    icon: path.join(__dirname, 'icon.png')
+      contextIsolation: true, // Secure mode on
+      preload: path.join(__dirname, 'preload.js') // You must have this file
+    }
   });
 
   mainWindow.loadFile('index.html');
-  
-  // hi
-  // bye
 }
 
 app.whenReady().then(createWindow);
@@ -36,45 +37,57 @@ app.on('activate', () => {
   }
 });
 
-// IPC Handlers
+// --- IPC HANDLERS ---
+
+// 1. Fetch Subplaces
 ipcMain.handle('fetch-subplaces', async (event, placeId) => {
   try {
-    // Get universe ID
+    // A. Get Universe ID from the Place ID
     const universeUrl = `https://apis.roblox.com/universes/v1/places/${placeId}/universe`;
     const universeResp = await axios.get(universeUrl);
+    
+    if (!universeResp.data || !universeResp.data.universeId) {
+      throw new Error("Could not find Universe ID for this Place.");
+    }
+    
     const universeId = universeResp.data.universeId;
 
-    // Fetch all places
+    // B. Fetch all places in that Universe (handling pagination)
     let allPlaces = [];
     let cursor = null;
 
-    while (true) {
-      let url = `https://develop.roblox.com/v1/universes/${universeId}/places?limit=100`;
+    do {
+      let url = `https://develop.roblox.com/v1/universes/${universeId}/places?limit=100&sortOrder=Asc`;
       if (cursor) {
         url += `&cursor=${cursor}`;
       }
 
       const placesResp = await axios.get(url);
-      allPlaces = allPlaces.concat(placesResp.data.data);
-
-      if (placesResp.data.nextPageCursor) {
+      
+      if (placesResp.data && placesResp.data.data) {
+        allPlaces = allPlaces.concat(placesResp.data.data);
         cursor = placesResp.data.nextPageCursor;
       } else {
-        break;
+        cursor = null;
       }
-    }
+      
+    } while (cursor);
 
     return { success: true, places: allPlaces };
+
   } catch (error) {
+    console.error(error);
     return { 
       success: false, 
-      error: error.response?.data?.message || error.message 
+      error: error.response?.data?.message || error.message || "Unknown API Error"
     };
   }
 });
 
+// 2. Open Place (Deep Link)
 ipcMain.handle('open-place', async (event, placeId) => {
   try {
+    // Opens Roblox Client directly
     await shell.openExternal(`roblox://experiences/start?placeId=${placeId}`);
     return { success: true };
   } catch (error) {
@@ -82,6 +95,7 @@ ipcMain.handle('open-place', async (event, placeId) => {
   }
 });
 
+// 3. Clipboard
 ipcMain.handle('copy-to-clipboard', async (event, text) => {
   try {
     clipboard.writeText(text);
