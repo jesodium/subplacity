@@ -3,3 +3,9 @@ dist/
 .env
 .DS_Store
 .vscode/
+coverage/
+npm-debug.log*
+yarn-error.log*
+.idea/
+*.log
+*.swp
