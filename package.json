@@ -1,7 +1,7 @@
 {
   "name": "subplacity",
   "productName": "Subplacity",
-  "version": "1.0.2",
+  "version": "1.0.1",
   "description": "roblox subplace finder",
   "main": "main.js",
   "author": "misunderstood",
@@ -13,6 +13,7 @@
   "build": {
     "appId": "com.misunderstood.subplacity",
     "productName": "Subplacity",
+    "publish": null,
     "directories": {
       "buildResources": "build"
     },
