@@ -10,14 +10,12 @@ function createWindow() {
     width: 1000,
     height: 700,
     title: 'subplacity',
-    // Fix: This must be at the root level, not inside webPreferences
     autoHideMenuBar: true, 
-    // Pointing to build folder standardizes icons for packaging
     icon: path.join(__dirname, 'build/icon.png'), 
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true, // Secure mode on
-      preload: path.join(__dirname, 'preload.js') // You must have this file
+      preload: path.join(__dirname, 'preload.js')
     }
   });
 
@@ -104,4 +102,5 @@ ipcMain.handle('copy-to-clipboard', async (event, text) => {
   } catch (error) {
     return { success: false, error: error.message };
   }
+
 });
