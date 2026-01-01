@@ -14,7 +14,7 @@ function createWindow() {
     icon: path.join(__dirname, 'build/icon.png'), 
     webPreferences: {
       nodeIntegration: false,
-      contextIsolation: true, // Secure mode on
+      contextIsolation: true,
       preload: path.join(__dirname, 'preload.js')
     }
   });
@@ -104,3 +104,4 @@ ipcMain.handle('copy-to-clipboard', async (event, text) => {
   }
 
 });
+
