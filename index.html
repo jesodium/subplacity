@@ -1,19 +1,21 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>subplacity | roblox subplace finder</title>
-    
-    <!-- FONTS -->
+
+    <!-- google fonts used for ui, headers, and monospace layout -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-    
+
+    <!-- notification library css for toast messages -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
 
     <style>
-        /* --- SOLACE DESIGN SYSTEM --- */
+        /* global css variables for colors, fonts, and status states */
         :root {
             --bg-color: #050505;
             --panel-bg: #0a0a0a;
@@ -21,17 +23,22 @@
             --accent: #ffffff;
             --text-main: #eee;
             --text-muted: #888;
-            
-            --font-main: 'JetBrains Mono', monospace; 
+            --font-main: 'JetBrains Mono', monospace;
             --font-ui: 'Inter', sans-serif;
             --font-header: 'Space Mono', monospace;
-            
             --success: #10b981;
             --error: #ef4444;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
+        /* base reset for consistent layout */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            outline: none;
+        }
 
+        /* main page layout and font rendering */
         body {
             font-family: var(--font-main);
             background: var(--bg-color);
@@ -43,17 +50,22 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* --- BACKGROUND GRID --- */
+        /* subtle grid background for terminal style feel */
         .workspace-bg {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-image: 
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
                 linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
             background-size: 40px 40px;
-            z-index: -1; pointer-events: none;
+            z-index: -1;
+            pointer-events: none;
         }
 
-        /* --- LAYOUT --- */
+        /* main centered container holding all ui elements */
         .container {
             max-width: 900px;
             margin: 0 auto;
@@ -64,7 +76,7 @@
             height: 100%;
         }
 
-        /* --- HEADER --- */
+        /* top header with title and version */
         header {
             margin-bottom: 30px;
             border-bottom: 1px solid var(--win-border);
@@ -74,6 +86,7 @@
             align-items: flex-end;
         }
 
+        /* app title styling */
         h1 {
             font-family: var(--font-header);
             font-size: 18px;
@@ -82,7 +95,8 @@
             letter-spacing: 1px;
             text-transform: lowercase;
         }
-        
+
+        /* small version badge */
         .version-tag {
             font-family: var(--font-ui);
             font-size: 10px;
@@ -92,7 +106,7 @@
             border-radius: 10px;
         }
 
-        /* --- INPUT SECTION --- */
+        /* input area containing text field and fetch button */
         .input-section {
             display: flex;
             gap: 10px;
@@ -104,6 +118,7 @@
             box-shadow: 0 4px 20px rgba(0,0,0,0.3);
         }
 
+        /* text input for place or universe id */
         input[type="text"] {
             flex: 1;
             background: #000;
@@ -116,12 +131,13 @@
             transition: all 0.2s;
         }
 
+        /* visual feedback when input is focused */
         input[type="text"]:focus {
             border-color: #fff;
             box-shadow: 0 0 10px rgba(255,255,255,0.1);
         }
 
-        /* --- BUTTONS (Fixed & Animated) --- */
+        /* primary button styling */
         button {
             background: #000;
             border: 1px solid #fff;
@@ -137,6 +153,7 @@
             letter-spacing: 0.5px;
         }
 
+        /* hover animation for buttons */
         button:hover {
             background: #fff;
             color: #000;
@@ -144,10 +161,12 @@
             box-shadow: 0 4px 12px rgba(255,255,255,0.2);
         }
 
+        /* pressed button state */
         button:active {
             transform: translateY(0);
         }
 
+        /* disabled button state */
         button:disabled {
             background: #111;
             border-color: #333;
@@ -157,7 +176,7 @@
             box-shadow: none;
         }
 
-        /* --- STATUS --- */
+        /* status bar showing current system state */
         .status {
             font-family: var(--font-ui);
             font-size: 11px;
@@ -168,27 +187,37 @@
             align-items: center;
             gap: 8px;
         }
-        
+
+        /* small dot used for status indication */
         .status-dot {
-            width: 8px; height: 8px; border-radius: 50%;
-            background: #333; display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #333;
+            display: inline-block;
             transition: background 0.3s;
         }
-        
-        /* Pulse Animation */
+
+        /* pulse animation for active state */
         @keyframes pulse {
             0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
             70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
             100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
         }
 
-        .status.active .status-dot { 
-            background: var(--success); 
+        /* active status styling */
+        .status.active .status-dot {
+            background: var(--success);
             animation: pulse 2s infinite;
         }
-        .status.error .status-dot { background: var(--error); box-shadow: 0 0 5px var(--error); }
 
-        /* --- TABLE --- */
+        /* error status styling */
+        .status.error .status-dot {
+            background: var(--error);
+            box-shadow: 0 0 5px var(--error);
+        }
+
+        /* wrapper that holds the results table */
         .table-wrapper {
             flex: 1;
             overflow-y: auto;
@@ -199,14 +228,19 @@
             position: relative;
         }
 
+        /* table layout and sizing */
         table {
             width: 100%;
             border-collapse: collapse;
             font-size: 12px;
         }
 
-        table.hidden { display: none; }
+        /* hides table when no data is loaded */
+        table.hidden {
+            display: none;
+        }
 
+        /* table header styling */
         thead th {
             text-align: left;
             background: #0e0e0e;
@@ -222,25 +256,25 @@
             z-index: 10;
         }
 
-        /* --- ROW ANIMATIONS --- */
+        /* animation for rows appearing */
         @keyframes slideUp {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* table row animation setup */
         tbody tr {
             animation: slideUp 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-            opacity: 0; /* Hidden initially for animation */
+            opacity: 0;
         }
-        
-        /* Stagger animation for first 10 items */
+
         tbody tr:nth-child(1) { animation-delay: 0.05s; }
         tbody tr:nth-child(2) { animation-delay: 0.1s; }
         tbody tr:nth-child(3) { animation-delay: 0.15s; }
         tbody tr:nth-child(4) { animation-delay: 0.2s; }
         tbody tr:nth-child(5) { animation-delay: 0.25s; }
-        /* ... and so on, others will just appear */
 
+        /* table cell styling */
         tbody td {
             padding: 10px 15px;
             border-bottom: 1px solid #1a1a1a;
@@ -248,12 +282,12 @@
             vertical-align: middle;
         }
 
+        /* hover effect for rows */
         tbody tr:hover {
             background: #161616;
         }
 
-        /* --- ACTION BUTTONS INSIDE TABLE --- */
-        /* Targets any button inside a table cell */
+        /* buttons inside table rows */
         td button {
             background: transparent !important;
             border: 1px solid #333 !important;
@@ -264,7 +298,8 @@
             height: auto;
             border-radius: 4px;
         }
-        
+
+        /* hover effect for table action buttons */
         td button:hover {
             background: #fff !important;
             color: #000 !important;
@@ -272,10 +307,11 @@
             transform: translateY(-1px);
         }
 
-        /* --- EMPTY STATE --- */
+        /* empty state shown before any data is loaded */
         .empty {
             position: absolute;
-            top: 50%; left: 50%;
+            top: 50%;
+            left: 50%;
             transform: translate(-50%, -50%);
             text-align: center;
             color: #444;
@@ -283,16 +319,23 @@
             font-size: 13px;
             animation: fadeIn 0.5s ease;
         }
-        .empty.hidden { display: none; }
-        
-        @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
 
-        /* --- SCROLLBAR --- */
+        /* hides empty state when results exist */
+        .empty.hidden {
+            display: none;
+        }
+
+        /* fade in animation */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* custom scrollbar styling */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: #555; }
-
     </style>
 </head>
 <body>
@@ -307,7 +350,7 @@
 
         <div class="input-section">
             <input type="text" id="placeId" placeholder="enter universe id / place id...">
-            <button id="fetchBtn">FETCH SUBPLACES</button>
+            <button id="fetchBtn">fetch subplaces</button>
         </div>
 
         <div class="status" id="status">
@@ -323,9 +366,9 @@
             <table id="placesTable" class="hidden">
                 <thead>
                     <tr>
-                        <th width="40%">Name</th>
-                        <th width="30%">ID</th>
-                        <th width="30%" style="text-align:right">Actions</th>
+                        <th width="40%">name</th>
+                        <th width="30%">id</th>
+                        <th width="30%" style="text-align:right">actions</th>
                     </tr>
                 </thead>
                 <tbody id="tableBody"></tbody>
@@ -333,8 +376,11 @@
         </div>
     </div>
 
+    <!-- notification library script -->
     <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+
     <script>
+        /* initialize notification system with custom styles */
         const notyf = new Notyf({
             duration: 2500,
             position: { x: 'right', y: 'bottom' },
@@ -344,20 +390,21 @@
             ]
         });
 
-        // 1. UPDATED DEEP LINK LOGIC
+        /* opens a roblox place directly in the client */
         window.openPlace = (id) => {
-            // Tries to launch Roblox Client directly
             window.location.href = `roblox://placeId=${id}`;
-            notyf.success(`Launching Roblox: ${id}`);
+            notyf.success(`launching roblox: ${id}`);
         };
 
+        /* copies a value to the clipboard */
         window.copyToClipboard = (text) => {
             navigator.clipboard.writeText(text);
-            notyf.success(`ID Copied: ${text}`);
+            notyf.success(`id copied: ${text}`);
         };
     </script>
 
-    <!-- YOUR ORIGINAL LOGIC -->
+    <!-- main application logic -->
     <script src="renderer.js"></script>
 </body>
 </html>
+```
