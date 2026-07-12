@@ -193,8 +193,8 @@
         <div class="title">subplacity</div>
         <div class="subtitle">join any roblox subplace</div>
         <div class="boxes">
-            <a href="https://github.com/jesodium/subplacity/releases" class="box" target="_blank">
-                <span>download</span>
+            <a href="https://github.com/jesodium/subplacity/releases" class="box" target="_blank" id="download-link">
+                <span id="download-text">download</span>
             </a>
             <a href="https://github.com/jesodium/subplacity" class="box" target="_blank">
                 <span>source code</span>
@@ -202,5 +202,45 @@
         </div>
     </div>
 
+    <script>
+        const GITHUB_USER = 'jesodium';
+        const GITHUB_REPO = 'subplacity';
+
+        function getOS() {
+            const ua = navigator.userAgent;
+            if (ua.includes('Win')) return 'windows';
+            if (ua.includes('Mac')) return 'macos';
+            if (ua.includes('Linux')) return 'linux';
+            return '';
+        }
+
+        async function updateDownload() {
+            const link = document.getElementById('download-link');
+            const text = document.getElementById('download-text');
+
+            try {
+                const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/releases/latest`);
+                const data = await res.json();
+
+                const os = getOS();
+                let asset = data.assets?.[0];
+
+                if (os === 'windows') asset = data.assets.find(a => a.name.match(/\.(exe|msi|nupkg)$/i)) || asset;
+                else if (os === 'macos') asset = data.assets.find(a => a.name.match(/\.(dmg|zip)$/i)) || asset;
+                else if (os === 'linux') asset = data.assets.find(a => a.name.match(/\.(AppImage|deb|rpm)$/i)) || asset;
+
+                if (asset) {
+                    link.href = asset.browser_download_url;
+                    text.textContent = os ? `download for ${os}` : 'download';
+                } else {
+                    text.textContent = 'download';
+                }
+            } catch {
+                text.textContent = 'download';
+            }
+        }
+
+        updateDownload();
+    </script>
 </body>
 </html>
