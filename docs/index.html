@@ -223,11 +223,14 @@
                 const data = await res.json();
 
                 const os = getOS();
-                let asset = data.assets?.[0];
-
-                if (os === 'windows') asset = data.assets.find(a => a.name.match(/\.(exe|msi|nupkg)$/i)) || asset;
-                else if (os === 'macos') asset = data.assets.find(a => a.name.match(/\.(dmg|zip)$/i)) || asset;
-                else if (os === 'linux') asset = data.assets.find(a => a.name.match(/\.(AppImage|deb|rpm)$/i)) || asset;
+                // IMPORTANT NOTE: no match for the detected OS means no build for it -- link the
+                // releases page instead of assets[0], which served Windows users a mac .yml file.
+                const patterns = {
+                    windows: /\.(exe|msi|nupkg)$/i,
+                    macos: /\.(dmg|zip)$/i,
+                    linux: /\.(AppImage|deb|rpm)$/i,
+                };
+                const asset = patterns[os] && data.assets?.find(a => patterns[os].test(a.name));
 
                 if (asset) {
                     link.href = asset.browser_download_url;

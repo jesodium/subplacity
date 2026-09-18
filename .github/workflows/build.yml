@@ -50,6 +50,11 @@ jobs:
         run: npm ci
 
       - name: Build EXE
-        run: npx electron-builder --win --publish always
+        run: npx electron-builder --win --publish never
+
+      # IMPORTANT NOTE: electron-builder's own publish created a SECOND release on the same
+      # tag in v1.0.3, so releases/latest had no .exe. Upload to the mac job's release instead.
+      - name: Upload EXE to release
+        run: gh release upload "$env:GITHUB_REF_NAME" (Get-Item dist/*.exe) --clobber
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
