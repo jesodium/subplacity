@@ -67,26 +67,15 @@
 
         /* main centered container holding all ui elements */
         .container {
-            max-width: 900px;
+            max-width: 1100px;
             margin: 0 auto;
-            padding: 40px 20px;
+            padding: 28px 32px;
             width: 100%;
-            display: flex;
-            flex-direction: column;
             height: 100%;
+            overflow-y: auto;
         }
 
-        /* top header with title and version */
-        header {
-            margin-bottom: 30px;
-            border-bottom: 1px solid var(--win-border);
-            padding-bottom: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-        }
-
-        /* app title styling */
+        /* top left brand, nothing else up there */
         h1 {
             font-family: var(--font-header);
             font-size: 18px;
@@ -94,50 +83,12 @@
             color: #fff;
             letter-spacing: 1px;
             text-transform: lowercase;
+            margin-bottom: 28px;
         }
 
-        /* small version badge */
-        .version-tag {
-            font-family: var(--font-ui);
-            font-size: 10px;
-            color: #666;
-            border: 1px solid #333;
-            padding: 2px 8px;
-            border-radius: 10px;
-        }
+        [hidden] { display: none !important; }
 
-        /* input area containing text field and fetch button */
-        .input-section {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-            background: #0a0a0a;
-            padding: 15px;
-            border: 1px solid #333;
-            border-radius: 6px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-        }
-
-        /* text input for place or universe id */
-        input[type="text"] {
-            flex: 1;
-            background: #000;
-            border: 1px solid #333;
-            color: #fff;
-            font-family: var(--font-main);
-            font-size: 13px;
-            padding: 10px 15px;
-            border-radius: 4px;
-            transition: all 0.2s;
-        }
-
-        /* visual feedback when input is focused */
-        input[type="text"]:focus {
-            border-color: #fff;
-            box-shadow: 0 0 10px rgba(255,255,255,0.1);
-        }
-
-        /* primary button styling */
+        /* base buttons */
         button {
             background: #000;
             border: 1px solid #fff;
@@ -146,189 +97,274 @@
             font-size: 12px;
             font-weight: 700;
             cursor: pointer;
-            padding: 0 20px;
+            padding: 8px 16px;
             text-transform: uppercase;
             border-radius: 4px;
             transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
             letter-spacing: 0.5px;
         }
+        button:hover { background: #fff; color: #000; }
+        button:disabled { background: #111; border-color: #333; color: #666; cursor: not-allowed; }
+        button:focus-visible, .card:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
 
-        /* hover animation for buttons */
-        button:hover {
-            background: #fff;
-            color: #000;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(255,255,255,0.2);
-        }
+        .ghost { border-color: #333; color: var(--text-muted); background: transparent; }
 
-        /* pressed button state */
-        button:active {
-            transform: translateY(0);
-        }
-
-        /* disabled button state */
-        button:disabled {
-            background: #111;
-            border-color: #333;
-            color: #666;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
-        /* status bar showing current system state */
-        .status {
-            font-family: var(--font-ui);
-            font-size: 11px;
-            color: #666;
-            margin-bottom: 20px;
-            padding-left: 5px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        /* small dot used for status indication */
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #333;
-            display: inline-block;
-            transition: background 0.3s;
-        }
-
-        /* pulse animation for active state */
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
-            70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
-        }
-
-        /* active status styling */
-        .status.active .status-dot {
-            background: var(--success);
-            animation: pulse 2s infinite;
-        }
-
-        /* error status styling */
-        .status.error .status-dot {
-            background: var(--error);
-            box-shadow: 0 0 5px var(--error);
-        }
-
-        /* wrapper that holds the results table */
-        .table-wrapper {
-            flex: 1;
-            overflow-y: auto;
-            border: 1px solid var(--win-border);
-            background: rgba(10, 10, 10, 0.6);
-            backdrop-filter: blur(5px);
-            border-radius: 6px;
-            position: relative;
-        }
-
-        /* table layout and sizing */
-        table {
+        input[type="text"] {
             width: 100%;
-            border-collapse: collapse;
-            font-size: 12px;
+            background: #000;
+            border: 1px solid #333;
+            color: #fff;
+            font-family: var(--font-main);
+            font-size: 13px;
+            padding: 10px 14px;
+            border-radius: 4px;
+        }
+        input[type="text"]:focus { border-color: #fff; }
+
+        /* game catalog grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 16px;
         }
 
-        /* hides table when no data is loaded */
-        table.hidden {
-            display: none;
-        }
-
-        /* table header styling */
-        thead th {
-            text-align: left;
-            background: #0e0e0e;
-            color: #888;
-            font-family: var(--font-ui);
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding: 12px 15px;
-            border-bottom: 1px solid #333;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-
-        /* animation for rows appearing */
         @keyframes slideUp {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* table row animation setup */
-        tbody tr {
-            animation: slideUp 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        /* one rectangle per game: darkened thumbnail, title + dev bottom left */
+        .card {
+            position: relative;
+            aspect-ratio: 16 / 9;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #222;
+            background: #111;
+            cursor: pointer;
+            animation: slideUp 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .card img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.45);
+            transition: filter 0.25s, transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .card:hover img { filter: brightness(0.6); transform: scale(1.03); }
+        .card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.85), transparent 60%);
+            pointer-events: none;
+        }
+        .meta {
+            position: absolute;
+            left: 14px;
+            right: 14px;
+            bottom: 12px;
+            z-index: 1;
+            font-family: var(--font-ui);
+        }
+        .meta .title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #fff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .meta .dev { font-size: 12px; color: #aaa; margin-top: 2px; }
+
+        /* small x in the corner, only on hover */
+        .card .remove {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            z-index: 2;
+            padding: 2px 8px;
+            font-size: 14px;
+            border-color: #444;
+            background: rgba(0,0,0,0.6);
             opacity: 0;
         }
+        .card:hover .remove, .card:focus-within .remove { opacity: 1; }
 
-        tbody tr:nth-child(1) { animation-delay: 0.05s; }
-        tbody tr:nth-child(2) { animation-delay: 0.1s; }
-        tbody tr:nth-child(3) { animation-delay: 0.15s; }
-        tbody tr:nth-child(4) { animation-delay: 0.2s; }
-        tbody tr:nth-child(5) { animation-delay: 0.25s; }
-
-        /* table cell styling */
-        tbody td {
-            padding: 10px 15px;
-            border-bottom: 1px solid #1a1a1a;
-            color: #ccc;
-            vertical-align: middle;
-        }
-
-        /* hover effect for rows */
-        tbody tr:hover {
-            background: #161616;
-        }
-
-        /* buttons inside table rows */
-        td button {
-            background: transparent !important;
-            border: 1px solid #333 !important;
-            color: #888 !important;
-            padding: 4px 10px !important;
-            font-size: 10px !important;
-            margin-left: 5px;
-            height: auto;
-            border-radius: 4px;
-        }
-
-        /* hover effect for table action buttons */
-        td button:hover {
-            background: #fff !important;
-            color: #000 !important;
-            border-color: #fff !important;
-            transform: translateY(-1px);
-        }
-
-        /* empty state shown before any data is loaded */
-        .empty {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            color: #444;
+        .card.new {
+            border: 1px dashed #444;
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-family: var(--font-ui);
             font-size: 13px;
-            animation: fadeIn 0.5s ease;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: lowercase;
+            letter-spacing: 0.5px;
+        }
+        .card.new::after { display: none; }
+        .card.new:hover { border-color: #fff; color: #fff; }
+
+        /* game page: wide banner reusing card look */
+        .hero { aspect-ratio: auto; height: 200px; cursor: default; margin-bottom: 20px; }
+        .hero:hover img { filter: brightness(0.45); transform: none; }
+        .hero .meta .title { font-size: 24px; }
+        .hero .meta .dev { font-size: 13px; }
+        .back { margin-bottom: 16px; }
+
+        .section-label {
+            font-family: var(--font-ui);
+            font-size: 11px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 0 0 8px 4px;
         }
 
-        /* hides empty state when results exist */
-        .empty.hidden {
-            display: none;
+        /* subplace rows */
+        .places { list-style: none; border: 1px solid var(--win-border); border-radius: 6px; overflow: hidden; }
+        .places li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 12px;
+            border-bottom: 1px solid #1a1a1a;
+            font-size: 12px;
+            color: #ccc;
+        }
+        .places li:last-child { border-bottom: none; }
+        .places li:hover { background: #161616; }
+        .places .name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .places .pid { color: #666; }
+        .places button { padding: 4px 10px; font-size: 10px; border-color: #333; color: #888; background: transparent; }
+        .places button:hover { background: #fff; color: #000; border-color: #fff; }
+        .places .star { border: none; font-size: 16px; padding: 0 4px; color: #555; }
+        .places .star[aria-pressed="true"] { color: #facc15; }
+        .places .star:hover { background: transparent; color: #aaa; }
+        .places .star[aria-pressed="true"]:hover { color: #fde68a; }
+        .places .from { color: #666; }
+        .card.favs .meta .title { text-transform: uppercase; letter-spacing: 1px; font-size: 13px; }
+
+        /* home search: filters saved games */
+        .search { margin-bottom: 20px; max-width: 360px; }
+
+        /* favorites card: collage of the games' thumbnails + star */
+        .collage {
+            position: absolute;
+            inset: 0;
+            display: grid;
+            grid-template-columns: repeat(var(--cols, 1), 1fr);
+            grid-auto-rows: 1fr;
+        }
+        .collage img { position: static; filter: brightness(0.4); }
+        .card.favs:hover .collage img { filter: brightness(0.55); transform: none; }
+        .fav-star {
+            position: absolute;
+            top: 10px;
+            left: 12px;
+            z-index: 1;
+            font-size: 22px;
+            color: #facc15;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.8);
         }
 
-        /* fade in animation */
+        /* roblox search results in the new game popup */
+        .results { list-style: none; margin-top: 12px; max-height: 300px; overflow-y: auto; }
+        .results li button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            text-align: left;
+            text-transform: none;
+            letter-spacing: 0;
+            border: 1px solid transparent;
+            background: transparent;
+            padding: 6px;
+            font-weight: 400;
+        }
+        .results li button:hover, .results li button:focus-visible { background: #161616; color: #fff; border-color: #333; }
+        .results img { width: 40px; height: 40px; border-radius: 6px; background: #111; flex: none; }
+        .results .rname { font-size: 13px; font-weight: 600; color: #fff; }
+        .results .rdev { font-size: 11px; color: #888; }
+        .danger:hover { background: var(--error); border-color: var(--error); color: #fff; }
+
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
+        }
+
+        /* update popup: card over a dimmed app */
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            animation: fadeIn 0.25s ease;
+        }
+
+        /* closing plays the opening animations in reverse */
+        @keyframes fadeOut { to { opacity: 0; } }
+        @keyframes dropOut { to { opacity: 0; transform: translateY(-20px) scale(0.97); } }
+        .modal.closing { animation: fadeOut 0.2s ease forwards; pointer-events: none; }
+        .modal.closing .modal-window { animation: dropOut 0.2s cubic-bezier(0.4, 0, 1, 1) forwards; }
+
+        .modal.hidden {
+            display: none;
+        }
+
+        @keyframes dropIn {
+            from { opacity: 0; transform: translateY(-20px) scale(0.97); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .modal-window {
+            width: 400px;
+            max-width: calc(100vw - 32px);
+            background: var(--panel-bg);
+            border: 1px solid var(--win-border);
+            border-radius: 10px;
+            padding: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+            font-family: var(--font-ui);
+            animation: dropIn 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .modal-window h2 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        .modal-window p {
+            font-size: 13px;
+            line-height: 1.5;
+            color: var(--text-muted);
+        }
+
+        .modal-window p b {
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 22px;
+        }
+
+        .modal-actions button {
+            padding: 9px 18px;
         }
 
         /* custom scrollbar styling */
@@ -343,36 +379,59 @@
     <div class="workspace-bg"></div>
 
     <div class="container">
-        <header>
-            <h1>subplacity <span style="color:#666">//</span> finder</h1>
-            <span class="version-tag">v1.0.0</span>
-        </header>
+        <h1>subplacity</h1>
 
-        <div class="input-section">
-            <input type="text" id="placeId" placeholder="enter universe id / place id...">
-            <button id="fetchBtn">fetch subplaces</button>
-        </div>
+        <main id="home">
+            <input type="text" class="search" id="searchInput" placeholder="search saved games..." aria-label="search saved games">
+            <div class="grid" id="grid"></div>
+        </main>
 
-        <div class="status" id="status">
-            <span class="status-dot"></span>
-            <span id="statusText">system ready</span>
-        </div>
-
-        <div class="table-wrapper">
-            <div class="empty" id="emptyState">
-                waiting for input...
+        <main id="gameView" hidden>
+            <button class="ghost back" id="backBtn">&larr; back</button>
+            <div class="card hero">
+                <img id="heroImg" alt="">
+                <div class="meta">
+                    <div class="title" id="heroTitle"></div>
+                    <div class="dev" id="heroDev"></div>
+                </div>
             </div>
+            <div class="section-label" id="placesLabel"></div>
+            <ul class="places" id="places"></ul>
+        </main>
+    </div>
 
-            <table id="placesTable" class="hidden">
-                <thead>
-                    <tr>
-                        <th width="40%">name</th>
-                        <th width="30%">id</th>
-                        <th width="30%" style="text-align:right">actions</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody"></tbody>
-            </table>
+    <div class="modal hidden" id="addOverlay" role="dialog" aria-modal="true" aria-labelledby="addTitle">
+        <div class="modal-window">
+            <h2 id="addTitle">new game</h2>
+            <p>search roblox by name, or paste a place id / game link.</p>
+            <input type="text" id="addInput" placeholder="e.g. blox fruits or 2753915549" aria-label="game name, place id or link" style="margin-top:14px">
+            <ul class="results" id="addResults"></ul>
+            <div class="modal-actions">
+                <button class="ghost" id="addCancel">cancel</button>
+                <button id="addGo">add</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal hidden" id="confirmOverlay" role="alertdialog" aria-modal="true" aria-labelledby="confirmTitle">
+        <div class="modal-window">
+            <h2 id="confirmTitle">remove game?</h2>
+            <p id="confirmText"></p>
+            <div class="modal-actions">
+                <button class="ghost" id="confirmNo">cancel</button>
+                <button class="danger" id="confirmYes">remove</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal hidden" id="updateOverlay" role="dialog" aria-modal="true" aria-labelledby="updateTitle">
+        <div class="modal-window">
+            <h2 id="updateTitle">update available</h2>
+            <p>subplacity <b id="updateLatest"></b> is out. you have <span id="updateCurrent"></span>.</p>
+            <div class="modal-actions">
+                <button class="ghost" id="updateLater">later</button>
+                <button id="updateGet">download</button>
+            </div>
         </div>
     </div>
 
@@ -390,17 +449,6 @@
             ]
         });
 
-        /* opens a roblox place directly in the client */
-        window.openPlace = (id) => {
-            window.location.href = `roblox://placeId=${id}`;
-            notyf.success(`launching roblox: ${id}`);
-        };
-
-        /* copies a value to the clipboard */
-        window.copyToClipboard = (text) => {
-            navigator.clipboard.writeText(text);
-            notyf.success(`id copied: ${text}`);
-        };
     </script>
 
     <!-- main application logic -->

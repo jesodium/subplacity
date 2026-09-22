@@ -52,9 +52,10 @@ jobs:
       - name: Build EXE
         run: npx electron-builder --win --publish never
 
+      # latest.yml + blockmap are what electron-updater reads to auto-update windows
       # IMPORTANT NOTE: electron-builder's own publish created a SECOND release on the same
       # tag in v1.0.3, so releases/latest had no .exe. Upload to the mac job's release instead.
       - name: Upload EXE to release
-        run: gh release upload "$env:GITHUB_REF_NAME" (Get-Item dist/*.exe) --clobber
+        run: gh release upload "$env:GITHUB_REF_NAME" (Get-Item dist/*.exe, dist/*.exe.blockmap, dist/latest.yml) --clobber
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

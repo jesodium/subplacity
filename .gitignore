@@ -9,3 +9,4 @@ yarn-error.log*
 .idea/
 *.log
 *.swp
+todo.md

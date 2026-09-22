@@ -1,13 +1,14 @@
 {
   "name": "subplacity",
   "productName": "Subplacity",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "roblox subplace finder",
   "main": "main.js",
   "author": "misunderstood",
   "license": "EPL-2.0",
   "scripts": {
     "start": "electron .",
+    "test:update": "electron . --fake-version=0.0.0",
     "dist": "electron-builder -mw"
   },
   "build": {
@@ -39,6 +40,7 @@
     "electron-builder": "^26.15.3"
   },
   "dependencies": {
-    "axios": "^1.6.2"
+    "axios": "^1.6.2",
+    "electron-updater": "^6.8.9"
   }
 }
