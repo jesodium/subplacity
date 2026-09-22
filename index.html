@@ -291,6 +291,7 @@
         .results img { width: 40px; height: 40px; border-radius: 6px; background: #111; flex: none; }
         .results .rname { font-size: 13px; font-weight: 600; color: #fff; }
         .results .rdev { font-size: 11px; color: #888; }
+        .yt:hover { background: #ff0033; border-color: #ff0033; color: #fff; }
         .danger:hover { background: var(--error); border-color: var(--error); color: #fff; }
 
         @keyframes fadeIn {
@@ -420,6 +421,17 @@
             <div class="modal-actions">
                 <button class="ghost" id="confirmNo">cancel</button>
                 <button class="danger" id="confirmYes">remove</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal hidden" id="ytOverlay" role="dialog" aria-modal="true" aria-labelledby="ytTitle">
+        <div class="modal-window">
+            <h2 id="ytTitle">enjoying subplacity?</h2>
+            <p>subscribe to <b>thiocyanogen</b> on youtube for updates and more stuff.</p>
+            <div class="modal-actions">
+                <button class="ghost" id="ytNo">no thanks</button>
+                <button class="yt" id="ytGo">subscribe</button>
             </div>
         </div>
     </div>

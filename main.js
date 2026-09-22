@@ -20,6 +20,12 @@ function createWindow() {
     }
   });
 
+  // links opened from the page (youtube popup) go to the real browser, never a new electron window
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    if (url.startsWith('https://')) shell.openExternal(url);
+    return { action: 'deny' };
+  });
+
   return mainWindow.loadFile('index.html');
 }
 

@@ -78,6 +78,8 @@
             justify-content: center;
             width: 240px;
             height: 120px;
+            padding: 0 16px;
+            text-align: center;
             text-decoration: none;
             font-size: 20px;
             font-weight: 700;
@@ -230,7 +232,23 @@
                     macos: /\.(dmg|zip)$/i,
                     linux: /\.(AppImage|deb|rpm)$/i,
                 };
-                const asset = patterns[os] && data.assets?.find(a => patterns[os].test(a.name));
+                const find = (re) => data.assets?.find(a => re.test(a.name));
+
+                // mac: browsers can't reliably tell apple silicon from intel, so offer both.
+                // no x64 dmg on the release (pre-1.1.1) = that box stays on the releases page.
+                if (os === 'macos') {
+                    const intel = link.cloneNode(true);
+                    intel.removeAttribute('id');
+                    link.after(intel);
+                    const arm = find(/arm64\.dmg$/i), x64 = find(/x64\.dmg$/i);
+                    if (arm) link.href = arm.browser_download_url;
+                    if (x64) intel.href = x64.browser_download_url;
+                    text.textContent = 'mac (apple silicon)';
+                    intel.querySelector('span').textContent = 'mac (intel)';
+                    return;
+                }
+
+                const asset = patterns[os] && find(patterns[os]);
 
                 if (asset) {
                     link.href = asset.browser_download_url;

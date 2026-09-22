@@ -262,6 +262,21 @@ async function addGame(placeId, btn) {
 
 renderHome();
 
+// youtube popup: once ever. skipped this launch if the update popup got there first.
+const ytOverlay = $('ytOverlay');
+let ytSeen = true;
+try { ytSeen = !!localStorage.getItem('ytSeen'); } catch {}
+if (!ytSeen) setTimeout(() => {
+    if (document.querySelector('.modal:not(.hidden)')) return;
+    localStorage.setItem('ytSeen', '1');
+    openModal(ytOverlay, $('ytGo'));
+}, 2000);
+$('ytGo').onclick = () => {
+    window.open('https://www.youtube.com/@thiocyanogen?sub_confirmation=1');
+    closeModal(ytOverlay);
+};
+$('ytNo').onclick = () => closeModal(ytOverlay);
+
 // update popup, main process fires this after checking github releases
 const updateOverlay = document.getElementById('updateOverlay');
 window.electronAPI.onUpdateAvailable(({ latest, current }) => {
@@ -277,5 +292,5 @@ document.getElementById('updateGet').onclick = async (e) => {
 };
 document.getElementById('updateLater').onclick = () => closeModal(updateOverlay);
 document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') { closeModal(updateOverlay); closeAdd(); if (confirmResolve) answerConfirm(false); }
+    if (e.key === 'Escape') { closeModal(updateOverlay); closeModal(ytOverlay); closeAdd(); if (confirmResolve) answerConfirm(false); }
 });
